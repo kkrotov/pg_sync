@@ -20,6 +20,7 @@ public:
     int pull_count_errors;
 
     virtual void init() = 0;
+    bool get_relation_fields();
     void pull();
     void clear();
     void addId(string &id);

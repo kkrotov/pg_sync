@@ -31,7 +31,32 @@ void BasePull::addId(string &id) {
     }
 }
 
+bool BasePull::get_relation_fields() {
+
+    fields.clear();
+    datatype.clear();
+
+    string sql = "SELECT a.attname, format_type(a.atttypid, a.atttypmod) "
+                 "FROM pg_attribute a "
+                 "WHERE a.attnum > 0 "
+                 "AND NOT a.attisdropped AND a.attrelid = '"+src_table+"'::regclass "
+                 "ORDER  BY a.attnum;";
+
+    BDbResult res = manager->db_calls.query(sql);
+    while (res.next()) {
+
+        std::string name = res.get_s(0);
+        std::string type = res.get_s(1);
+        fields.push_back(name);
+        datatype.push_back(name+" "+type);
+    }
+    return true;
+}
+
 void BasePull::pull() {
+
+    if (!get_relation_fields())
+        return;
 
     if (!need_pull) {
         return;

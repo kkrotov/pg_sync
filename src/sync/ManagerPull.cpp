@@ -17,6 +17,22 @@ void ManagerPull::add(BasePull * pull) {
     pulls.insert(make_pair(pull->event, pull));
 }
 
+bool ManagerPull::get_synclist() {
+
+    string sql = "select name,key from event.syncparam where enabled";
+    BDbResult res = db_main.query(sql);
+    if (res.size() == 0)
+        return false;
+
+    while (res.next()) {
+
+        string name = res.get_s(0);
+        string key = res.get_s(1);
+        synclist.push_back(make_pair(name,key));
+    }
+    return true;
+}
+
 void ManagerPull::pull() {
 
     string select_events_query =

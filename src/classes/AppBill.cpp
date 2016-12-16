@@ -56,26 +56,7 @@ void AppBill::runAppInSingleMode() {
     };
     for (auto thread: standardThreads) {
 
-        if (std::find(conf.skip_threads.begin(), conf.skip_threads.end(), thread) != conf.skip_threads.end()) {
-
-            cout << "Skipping thread " + thread + "...\n";
-            continue;
-        }
         cout << "Running thread " + thread + "...\n";
         threads.run(newThreadObject(thread));
-    }
-}
-
-void AppBill::runActiveThreads() {
-    for (auto thread_name: conf.active_threads) {
-
-        Thread *t = newThreadObject(thread_name);
-        if (t == nullptr) {
-
-            cout << "ERROR: Unable to run thread " + thread_name + "\n";
-            continue;
-        }
-        cout << "Running thread " + thread_name + "...\n";
-        threads.run(t);
     }
 }

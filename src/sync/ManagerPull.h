@@ -3,6 +3,7 @@
 #include "BasePull.h"
 
 #include <map>
+#include <vector>
 
 #include "../classes/BDb.h"
 
@@ -16,6 +17,8 @@ public:
     map<string, BasePull *> pulls;
     int part_size;
     int errors_count;
+    vector<pair<string,string>> synclist;
+    bool get_synclist();
 
     ManagerPull();
     void add(BasePull * pull);
@@ -24,7 +27,7 @@ public:
     static ManagerPull * instance() {
         static ManagerPull inst;
         return &inst;
-    }
+    };
 
 protected:
     void clearPulls();
