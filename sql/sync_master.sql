@@ -1,3 +1,6 @@
+INSERT INTO vpbx.syncparam(name,  key, enabled) VALUES ('vpbx.announce', 'announce_id', true);
+INSERT INTO vpbx.syncparam(name,  key, enabled) VALUES ('vpbx.asterisk_instance', 'asterisk_instance_id', true);
+
 CREATE TRIGGER tr_announce
   AFTER INSERT OR UPDATE OR DELETE
   ON vpbx.announce
