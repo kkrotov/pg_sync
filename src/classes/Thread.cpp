@@ -36,13 +36,13 @@ void Thread::usleep(unsigned int milliseconds) {
 
 void Thread::threadTotalsHeader(stringstream &html) {
     html << "<tr>\n";
-    html << "<td style='text-align: left' nowrap>Thread</td>\n";
-    html << "<td style='text-align: left' nowrap>Status</td>\n";
-    html << "<td style='text-align: left' nowrap>Count</td>\n";
-    html << "<td style='text-align: left' nowrap>Time last</td>\n";
-    html << "<td style='text-align: left' nowrap>Time total</td>\n";
-    html << "<td style='text-align: left' nowrap>Errors</td>\n";
-    html << "<td style='text-align: left' nowrap>Last error</td>\n";
+    html << "<td style='text-align: left' nowrap><b>Thread</b></td>\n";
+    html << "<td style='text-align: left' nowrap><b>Status</b></td>\n";
+    html << "<td style='text-align: left' nowrap><b>Count</b></td>\n";
+    html << "<td style='text-align: left' nowrap><b>Time last</b></td>\n";
+    html << "<td style='text-align: left' nowrap><b>Time total</b></td>\n";
+    html << "<td style='text-align: left' nowrap><b>Errors</b></td>\n";
+    html << "<td style='text-align: left' nowrap><b>Last error</b></td>\n";
     html << "</tr>";
 }
 

@@ -2,7 +2,8 @@
 
 #include "../threads/ThreadWeb.h"
 #include "../threads/ThreadLog.h"
-#include "../threads/ThreadSync.h"
+#include "../threads/ThreadSyncMaster.h"
+#include "../threads/ThreadSyncSlave.h"
 
 AppBill &app() {
 
@@ -43,7 +44,8 @@ Thread *AppBill::newThreadObject(std::string id) {
 void AppBill::registerAllThreads() {
 
     registerThread<ThreadLog>();
-    registerThread<ThreadSync>();
+    registerThread<ThreadSyncMaster>();
+    registerThread<ThreadSyncSlave>();
 }
 
 void AppBill::runAppInSingleMode() {
@@ -52,7 +54,9 @@ void AppBill::runAppInSingleMode() {
             // Логирование
             "log",
             // Перемещение данных из таблиц центрального сервера на региональные
-            "sync",
+            "sync_master",
+            // Перемещение данных из таблиц регионального сервера на центральные
+            "sync_slave",
     };
     for (auto thread: standardThreads) {
 

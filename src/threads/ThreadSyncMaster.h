@@ -7,12 +7,12 @@
 #include "../classes/Timer.h"
 #include "../sync/ManagerPull.h"
 
-class ThreadSync : public Thread {
+class ThreadSyncMaster : public Thread {
 
     ManagerPull * manager;
     void run();
 
 public:
-    ThreadSync();
-    static const char* idName() { return "sync"; }
+    ThreadSyncMaster();
+    static const char* idName() { return "sync_master"; }
 };

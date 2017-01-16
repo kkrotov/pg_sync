@@ -5,6 +5,8 @@
 #include <map>
 #include <list>
 #include <string>
+#include <vector>
+
 using namespace std;
 
 #include "BDbResult.h"
@@ -40,6 +42,7 @@ public:
 
     static void copy(string table_to, string table_from, string columns, string query, BDb *db_from, BDb *db_to, double bandwidth_limit_mbits = 0.0);
     static void copy_dblink(string dst_table, string fields, string columns, string query, BDb *db_from, BDb *db_to);
+    static void update_dblink(string dst_table, vector<string> fields, vector<string> datatype, string key, string id_to_pull, BDb *db_from, BDb *db_to);
 
     bool ping();
     bool rel_exists (string rel);

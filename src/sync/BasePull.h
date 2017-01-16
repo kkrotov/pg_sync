@@ -10,9 +10,12 @@
 using namespace std;
 
 class ManagerPull;
+class BDb;
 
 class BasePull {
+
 public:
+    bool need_pull;
     Timer timer;
     string event;
     int pull_count_full;
@@ -20,7 +23,7 @@ public:
     int pull_count_errors;
 
     virtual void init() = 0;
-    bool get_relation_fields();
+    bool get_relation_fields(BDb *db_slave);
     void pull();
     void clear();
     void addId(string &id);
@@ -33,17 +36,17 @@ protected:
     string src_table;
     string dst_table;
     string key;
-    string src_sql_where = "";
+    //string src_sql_where = "";
     
     vector<string> fields;
     vector<string> datatype;
 
     set<string> ids_to_pull;
-    bool need_pull;
     bool full_pull;
 
-    void pullFull();
-    void pullPartial();
+    void pull(BDb *db_master, BDb *db_slave);
+    void pullFull(BDb *db_master, BDb *db_slave);
+    void pullPartial(BDb *db_master, BDb *db_slave);
 
     string getQueryFields();
     string getFilterIds();

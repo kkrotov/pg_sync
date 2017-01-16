@@ -163,8 +163,8 @@ protected:
         if (!app().conf.log_syslog_ident.empty())
             app().logger.addLogWriter(pLogWriter(new LogWriterSyslog(app().conf.log_syslog_ident, app().conf.log_syslog_min_level, app().conf.log_syslog_max_level)));
 
-        if (!app().conf.log_graylog_host.empty())
-            app().logger.addLogWriter(pLogWriter(new LogWriterGraylog(app().conf.log_graylog_host, app().conf.log_graylog_port, app().conf.log_graylog_source, app().conf.str_instance_id)));
+//        if (!app().conf.log_graylog_host.empty())
+//            app().logger.addLogWriter(pLogWriter(new LogWriterGraylog(app().conf.log_graylog_host, app().conf.log_graylog_port, app().conf.log_graylog_source, app().conf.str_instance_id)));
 
         bool result = app().run();
 

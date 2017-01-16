@@ -72,10 +72,14 @@ set(BILL_SOURCES
 
         src/sync/BasePull.cpp
         src/sync/ManagerPull.cpp
+        src/sync/PullTable.cpp
+        src/sync/PullTable.h
 
         src/threads/ThreadLog.cpp
-        src/threads/ThreadSync.cpp
+        src/threads/ThreadSyncMaster.cpp
         src/threads/ThreadWeb.cpp
+        src/threads/ThreadSyncSlave.cpp
+        src/threads/ThreadSyncSlave.h
 
         src/web/http/mime_types.cpp
         src/web/http/reply.cpp
@@ -85,14 +89,16 @@ set(BILL_SOURCES
         src/web/HttpHandler.cpp
         src/web/PageHome.cpp
         src/web/PageLog.cpp
-        src/web/PageSync.cpp
-        src/sync/PullTable.cpp src/sync/PullTable.h)
+        src/web/PageSyncMaster.cpp
+        src/web/PageSyncSlave.cpp
+        src/web/PageSyncSlave.h)
 
 #add_custom_target(invalidate_files ALL
 #        COMMAND ${CMAKE_COMMAND} -E touch src/version.cpp)
 
 add_definitions(-DHAVE_SYS_IOCTL_H -DHAVE_SOCKLEN_T)
-file(GLOB_RECURSE ACE_RADIUS_SOURCES "libs/ace-radius/*.cpp")
+#file(GLOB_RECURSE ACE_RADIUS_SOURCES "libs/ace-radius/*.cpp")
 
-add_executable(pg_sync ${BILL_SOURCES} ${BOOST_SOURCES} ${JSON_SOURCES} ${ACE_RADIUS_SOURCES})
+add_executable(pg_sync ${BILL_SOURCES} ${BOOST_SOURCES} ${JSON_SOURCES})
+ #${ACE_RADIUS_SOURCES})
 target_link_libraries(pg_sync rt pthread pq curl crypto)

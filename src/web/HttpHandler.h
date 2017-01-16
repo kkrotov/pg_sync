@@ -2,17 +2,19 @@
 
 
 #include "PageHome.h"
-#include "PageSync.h"
+#include "PageSyncMaster.h"
 #include "PageLog.h"
 #include "http/request.hpp"
 #include "http/reply.hpp"
+#include "PageSyncSlave.h"
 
 class HttpHandler {
 private:
 
     static void spawnHandlers(vector<shared_ptr<BasePage>> &handlers) {
         handlers.push_back(shared_ptr<BasePage>(new PageHome));
-        handlers.push_back(shared_ptr<BasePage>(new PageSync));
+        handlers.push_back(shared_ptr<BasePage>(new PageSyncMaster));
+        handlers.push_back(shared_ptr<BasePage>(new PageSyncSlave));
         handlers.push_back(shared_ptr<BasePage>(new PageLog));
     }
 

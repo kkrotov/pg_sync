@@ -15,22 +15,9 @@ class BasePage {
     vector<pair<string,string>> header = {
 
             {"", "Home"},
-//            {"calls", "Calls"},
-//            {"trunks", "Trunks"},
-//            {"data", "Data"},
-//            {"data-billing", "Data billing"},
-//            {"counters", "Counters"},
-//            {"fmins", "Free minutes"},
-//            {"packages", "Old Packages"},
-//            {"nnp-package-minute-counters", "NNP Packages"},
-//            {"trunk-settings-counters", "Minimalki"},
-//            {"locks", "Locks"},
-//            {"blacklist", "Blacklist"},
-            {"sync", "Sync"},
-//            {"cdrunfinished", "CDR Log"},
-            {"log", "Log"},
-//            {"config", "Config"},
-//            {"health", "Health status"}
+            {"sync_master", "Master to slave"},
+            {"sync_slave", "Slave to master"},
+//            {"log", "Log"},
     };
 
 public:

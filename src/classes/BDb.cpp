@@ -177,6 +177,63 @@ bool BDb::rel_exists (string rel) {
     return res.next() && res.get_s(0).size()>0;
 }
 
+void BDb::update_dblink(string dst_table, vector<string> fields, vector<string> datatype, string key, string id_to_pull, BDb *db_from, BDb *db_to) {
+
+/*
+UPDATE vpbx.announce
+SET
+	file = Tab_remote.file,
+	name = Tab_remote.name,
+	type = Tab_remote.type,
+	vpbx_id = Tab_remote.vpbx_id,
+	filesize = Tab_remote.filesize,
+	duration = Tab_remote.duration,
+	format = Tab_remote.format,
+	create_dt = Tab_remote.create_dt
+FROM (
+    select announce_id, file, name, type, vpbx_id, filesize, duration, format, create_dt
+    from
+    dblink('dbname=vpbx port=5432 host=localhost user=kkrotov password=vfvfljhjufz',
+                'SELECT announce_id, file, name, type, vpbx_id, filesize, duration, format, create_dt
+                FROM vpbx.announce'
+                WHERE announce_id=6')
+		as t (announce_id bigint,file character varying,name character varying,type character varying,
+		vpbx_id integer,filesize integer,duration integer,format character varying,create_dt timestamp)
+            ) Table_B
+WHERE
+    vpbx.announce.announce_id=6;
+*/
+    if (!db_to->connect())
+        throw Exception("Database error");
+
+    string query_fields = "\"" + join(fields, "\",\"") + "\"";
+    string field_types = join(datatype, ",");
+    string sel = "select " + query_fields + " from " + dst_table + " where \"" + key + "\" ="+id_to_pull;
+    string update_set;
+    for (auto it: fields) {
+
+        if (update_set.size()>0)
+            update_set += ",";
+
+        update_set += "\"" + it + "\"" + " = Table_B."+"\"" + it + "\"";
+    }
+    string query_update = "UPDATE "+dst_table+" SET "+update_set+
+                        " FROM (SELECT "+query_fields+" FROM dblink('"+db_from->getCS()+"','"+sel+"')"+
+                        " AS t ("+field_types+")) Table_B "
+                        "WHERE "+dst_table+".\""+ key + "\"="+id_to_pull;
+
+    PGresult *res = PQexec(db_to->getConn(), query_update.c_str());
+    ExecStatusType statusType = PQresultStatus(res);
+    if (statusType == PGRES_FATAL_ERROR || statusType == PGRES_BAD_RESPONSE) {
+
+        DbException e(db_to->getConn(), "BDb::update_dblink");
+        PQclear(res);
+        db_to->disconnect();
+        throw e;
+    }
+    PQclear(res);
+}
+
 void BDb::copy_dblink(string dst_table, string fields, string columns, string query, BDb *db_from, BDb *db_to) {
 
     if (!db_to->connect()) {

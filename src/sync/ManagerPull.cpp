@@ -1,13 +1,13 @@
 #include "ManagerPull.h"
 #include "../classes/AppBill.h"
 
-ManagerPull::ManagerPull() {
+ManagerPull::ManagerPull(string masterCS, string slaveCS) {
 
     part_size = 100;
-    db_main.setCS(app().conf.db_main);
-    db_calls.setCS(app().conf.db_calls);
+    db_master.setCS(masterCS);
+    db_slave.setCS(slaveCS);
     errors_count = 0;
-    bandwidth_limit_mbits = app().conf.db_bandwidth_limit_mbits;
+    //bandwidth_limit_mbits = app().conf.db_bandwidth_limit_mbits;
 }
 
 void ManagerPull::add(BasePull * pull) {
@@ -20,7 +20,7 @@ void ManagerPull::add(BasePull * pull) {
 bool ManagerPull::get_synclist() {
 
     string sql = "select name,key from event.syncparam where enabled";
-    BDbResult res = db_main.query(sql);
+    BDbResult res = db_master.query(sql);
     if (res.size() == 0)
         return false;
 
@@ -33,15 +33,27 @@ bool ManagerPull::get_synclist() {
     return true;
 }
 
-void ManagerPull::pull() {
+//int ManagerPull::getInstanceId() {
+//
+//    int instance_id=0;
+//    string sql = "select value from vpbx.pg_server_settings where name='server_id'";
+//    BDbResult res = db_master.query(sql);
+//    if (res.next()) {
+//
+//        instance_id = res.get_i(0);
+//    }
+//    return instance_id;
+//}
+
+void ManagerPull::pull(int server_id) {
 
     string select_events_query =
-            "select event, param, version from event.queue where server_id in " + app().conf.get_sql_regions_list() +
-            " order by server_id, version limit " + lexical_cast<string>(part_size);
+            "select event, param, version from event.queue where server_id=" + to_string(server_id) +
+            " order by version limit " + lexical_cast<string>(part_size);
 
     while (true) {
 
-        BDbResult res = db_main.query(select_events_query);
+        BDbResult res = db_master.query(select_events_query);
         if (res.size() == 0)
             break;
 
@@ -56,7 +68,7 @@ void ManagerPull::pull() {
             if (it != pulls.end())
                 it->second->addId(id);
             else
-                db_main.exec("delete from event.queue where server_id in " + app().conf.get_sql_regions_list() + " and event = '" + event + "'");
+                db_master.exec("delete from event.queue where server_id=" + to_string(server_id) + " and event = '" + event + "'");
         }
 
         if (res.last()) {
@@ -64,10 +76,13 @@ void ManagerPull::pull() {
             string version = res.get_s(2);
             for (auto it : pulls) {
 
+                if (!it.second->need_pull)
+                    continue;
+
                 try {
 
+                    db_master.exec("delete from event.queue where server_id=" + to_string(server_id) + " and event = '" + it.second->event + "' and version <= " + version);
                     it.second->pull();
-                    db_main.exec("delete from event.queue where server_id in " + app().conf.get_sql_regions_list() + " and event = '" + it.second->event + "' and version <= " + version);
                 }
                 catch (Exception &e) {
 
