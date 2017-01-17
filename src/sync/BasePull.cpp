@@ -132,40 +132,6 @@ void BasePull::pullPartial(BDb *db_master, BDb *db_slave) {
     pull_count_partial += 1;
 }
 
-#if 0
-void BasePull::pullPartial(BDb *db_master, BDb *db_slave, double bandwidth_limit_mbits) {
-
-    string query_fields = getQueryFields();
-
-    string sel = "select " + query_fields + " from " + src_table;
-    string del = "delete from " + dst_table + " where \"" + key + "\" in (" + getFilterIds() + ")";
-
-    BDbTransaction trans(db_slave);
-    db_slave->exec(del);
-
-    if (datatype.size()>0) {
-
-        sel += " where \"" + key + "\" in (" + getFilterIds() + ") ";
-        string field_types = join(datatype, ",");
-        BDb::copy_dblink(dst_table, query_fields, field_types, sel,  db_master, db_slave);
-    }
-    else {
-
-        sel += " where \"" + key + "\" in (" + getFilterIds() + ") ";
-        BDb::copy(dst_table, src_table, query_fields, sel, db_master, db_slave, bandwidth_limit_mbits);
-    }
-    trans.commit();
-
-//    auto it = ids_to_pull.find(key);
-//    if (it != ids_to_pull.end()) {
-//        ids_to_pull.erase(it);
-//    }
-    ids_to_pull.clear();
-    pull_count_partial += 1;
-
-}
-#endif
-
 string BasePull::getQueryFields() {
 
     return "\"" + join(fields, "\",\"") + "\"";

@@ -17,7 +17,7 @@ class BasePage {
             {"", "Home"},
             {"sync_master", "Master to slave"},
             {"sync_slave", "Slave to master"},
-//            {"log", "Log"},
+            {"log", "Log"},
     };
 
 public:
